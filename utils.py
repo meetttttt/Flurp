@@ -1,14 +1,13 @@
-import os
 import fitz
 import google.generativeai as genai
-from dotenv import load_dotenv, find_dotenv
 
-load_dotenv(find_dotenv())
+from config import (GEMINI_API_KEY, GEMINI_DEFAULT_MODEL_NAME, GEMINI_TEMPERATURE,
+                    GEMINI_OUTPUT_TOKEN, GEMINI_SYSTEM_INSTRUCTION)
 
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+genai.configure(api_key=GEMINI_API_KEY)
 
 
-def call_gemini(query: str, stream: bool = False, model: str = os.getenv("GEMINI_MODEL_NAME")) -> str:
+def call_gemini(query: str, stream: bool = False, model: str = GEMINI_DEFAULT_MODEL_NAME) -> str:
     """
     This function will call gemini based on the query passed and then generate the response and send back.
     :param query: The query to be sent to gemini model.
@@ -17,8 +16,13 @@ def call_gemini(query: str, stream: bool = False, model: str = os.getenv("GEMINI
     :return: Response generated from the gemini model else empty string.
     """
     try:
-        model = genai.GenerativeModel(model)
-        response = model.generate_content(query, stream=stream)
+        model = genai.GenerativeModel(model, system_instruction=GEMINI_SYSTEM_INSTRUCTION)
+        response = model.generate_content(query,
+                                          generation_config=genai.GenerationConfig(
+                                              max_output_tokens=GEMINI_OUTPUT_TOKEN,
+                                              temperature=GEMINI_TEMPERATURE,
+                                          ),
+                                          stream=stream)
         return response.text
 
     except Exception as e:
