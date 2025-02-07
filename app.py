@@ -16,12 +16,12 @@ if uploaded_file is not None:
             f.write(uploaded_file.getbuffer())
 
         # Get the text extracted from the PDF
-        text = extract_text(file_path="docs/2369ea6b-467a-434d-8d66-fcf82f3bdfda.pdf",
+        text = extract_text(file_path=f"docs/{uploaded_file.name}",
                             save_to_txt=False)
 
         final_query = f"""
         Think like a Financial Analyst. You will provided with the Earning's Concall Transcipt.
-        You have do deep dive in the transcript and collect the most important pieces and summarize it.
+        You have to deep dive in the transcript and collect the most important pieces and summarize it.
         Your summary should be extensive and cover all the aspects. And always provide output in Markdown format. 
     
         Note: Look out when management is trying to sugar coat any issue or is trying to cover up. 
